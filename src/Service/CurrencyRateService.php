@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\Entity\CurrencyRate;
 use App\Entity\CurrencyRateInterface;
 use App\Exception\CurrencyRateException;
 use App\Repository\CurrencyRateRepositoryInterface;
@@ -15,9 +14,15 @@ class CurrencyRateService
      */
     private $entityManager;
 
-    public function __construct(ObjectManager $entityManager)
+    /**
+     * @var CurrencyRateInterface
+     */
+    private $currencyRateClassName;
+
+    public function __construct(ObjectManager $entityManager, $currencyRateClassName)
     {
         $this->entityManager = $entityManager;
+        $this->currencyRateClassName = $currencyRateClassName;
     }
 
     public function get($currencyFrom, $currencyTo, $number)
@@ -68,7 +73,7 @@ class CurrencyRateService
      */
     protected function getRepository()
     {
-        return $this->entityManager->getRepository(CurrencyRate::class);
+        return $this->entityManager->getRepository($this->currencyRateClassName);
     }
 
     protected function calculateExchange(CurrencyRateInterface $currencyRateFrom, CurrencyRateInterface $currencyRateTo, $number)

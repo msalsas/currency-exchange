@@ -29,4 +29,8 @@ services:
         resource: '../src/Repository'
     App\Service\:
         resource: '../src/Service'
-
+    App\Service\CurrencyRateService:
+        autowire: true
+        arguments:
+            $entityManager: "@doctrine.orm.default_entity_manager"
+            $currencyRateClassName: App\Entity\CurrencyRate

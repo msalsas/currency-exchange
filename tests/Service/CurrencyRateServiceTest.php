@@ -35,7 +35,7 @@ class CurrencyRateServiceTest extends TestCase
 
         $objectManager = $this->getObjectManagerMock($currencyRateRepository);
 
-        $currencyRateService = new CurrencyRateService($objectManager);
+        $currencyRateService = new CurrencyRateService($objectManager, CurrencyRate::class);
         $exchange = $currencyRateService->get($currencyRateFrom->getCurrency(), $currencyRateTo->getCurrency(), 1);
         $this->assertEquals(1.11, $exchange);
     }
@@ -52,7 +52,7 @@ class CurrencyRateServiceTest extends TestCase
 
         $objectManager = $this->getObjectManagerMock($currencyRateRepository);
 
-        $currencyRateService = new CurrencyRateService($objectManager);
+        $currencyRateService = new CurrencyRateService($objectManager, CurrencyRate::class);
         $exchange = $currencyRateService->get($currencyRateFrom->getCurrency(), $currencyRateTo->getCurrency(), 1);
         $this->assertEquals(0.82, $exchange);
     }
@@ -69,7 +69,7 @@ class CurrencyRateServiceTest extends TestCase
 
         $objectManager = $this->getObjectManagerMock($currencyRateRepository);
 
-        $currencyRateService = new CurrencyRateService($objectManager);
+        $currencyRateService = new CurrencyRateService($objectManager, CurrencyRate::class);
         $exchange = $currencyRateService->get($currencyRateFrom->getCurrency(), $currencyRateTo->getCurrency(), 1);
         $this->assertEquals(0.91, $exchange);
     }
@@ -88,7 +88,7 @@ class CurrencyRateServiceTest extends TestCase
 
         $this->expectException(CurrencyRateException::class);
 
-        $currencyRateService = new CurrencyRateService($objectManager);
+        $currencyRateService = new CurrencyRateService($objectManager, CurrencyRate::class);
         $currencyRateService->get($currencyRateFrom->getCurrency(), $currencyRateTo->getCurrency(), 1);
     }
 
@@ -106,7 +106,7 @@ class CurrencyRateServiceTest extends TestCase
 
         $this->expectException(CurrencyRateException::class);
 
-        $currencyRateService = new CurrencyRateService($objectManager);
+        $currencyRateService = new CurrencyRateService($objectManager, CurrencyRate::class);
         $currencyRateService->get($currencyRateFrom->getCurrency(), $currencyRateTo->getCurrency(), 1);
     }
 
@@ -124,7 +124,7 @@ class CurrencyRateServiceTest extends TestCase
 
         $objectManager = $this->getObjectManagerMock($currencyRateRepository);
 
-        $currencyRateService = new CurrencyRateService($objectManager);
+        $currencyRateService = new CurrencyRateService($objectManager, CurrencyRate::class);
         $createdCurrencyRate = $currencyRateService->create($currencyRate->getCurrency(), $currencyRate->getRateToEur(), $currencyRate->getSymbol());
 
         $this->assertEquals($currencyRate, $createdCurrencyRate);
@@ -143,7 +143,7 @@ class CurrencyRateServiceTest extends TestCase
 
         $this->expectException(CurrencyRateException::class);
 
-        $currencyRateService = new CurrencyRateService($objectManager);
+        $currencyRateService = new CurrencyRateService($objectManager, CurrencyRate::class);
         $currencyRateService->create($currencyRate->getCurrency(), $currencyRate->getRateToEur(), $currencyRate->getSymbol());
     }
 
@@ -163,7 +163,7 @@ class CurrencyRateServiceTest extends TestCase
 
         $objectManager = $this->getObjectManagerMock($currencyRateRepository);
 
-        $currencyRateService = new CurrencyRateService($objectManager);
+        $currencyRateService = new CurrencyRateService($objectManager, CurrencyRate::class);
         $updatedCurrencyRate = $currencyRateService->update($currencyRate->getCurrency(), $currencyRate->getRateToEur(), $currencyRate->getSymbol());
 
         $this->assertEquals($currencyRate, $updatedCurrencyRate);
@@ -183,7 +183,7 @@ class CurrencyRateServiceTest extends TestCase
 
         $this->expectException(CurrencyRateException::class);
 
-        $currencyRateService = new CurrencyRateService($objectManager);
+        $currencyRateService = new CurrencyRateService($objectManager, CurrencyRate::class);
         $currencyRateService->update($currencyRate->getCurrency(), $currencyRate->getRateToEur(), $currencyRate->getSymbol());
     }
 
