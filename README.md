@@ -39,6 +39,10 @@ Installation
 
     symfony server:start (you will need the [Symfony installer](https://symfony.com/download))
 
+Testing
+=======
+
+    php ./bin/phpunit
 
 License
 -------
