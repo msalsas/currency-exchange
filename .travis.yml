@@ -42,4 +42,4 @@ install:
     - php bin/console doctrine:migrations:migrate --env=test -q
 
 script:
-    - composer validate --strict --no-check-lock
+    - php ./bin/phpunit
