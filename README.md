@@ -29,15 +29,21 @@ Installation
 
     composer install
 
-    php bin/console doctrine:database:create (you will need php-sqlite3 as database is sqlite by default)
+    php bin/console doctrine:database:create
 
-    php bin/console doctrine:database:create --env=test (testing database)
+    php bin/console doctrine:database:create --env=test
     
     php bin/console doctrine:migrations:migrate
 
-    php bin/console doctrine:migrations:migrate --env=test (testing database)
+    php bin/console doctrine:migrations:migrate --env=test
 
-    symfony server:start (you will need the [Symfony installer](https://symfony.com/download))
+    symfony server:start 
+    
+*you will need:*
+ 
+ *- The [Symfony installer](https://symfony.com/download)*
+ 
+ *- `php-sqlite3` as database is sqlite by default*
 
 Testing
 =======

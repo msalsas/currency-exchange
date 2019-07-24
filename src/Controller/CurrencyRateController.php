@@ -26,6 +26,14 @@ class CurrencyRateController extends AbstractController
     }
 
     /**
+     * @Route("/", name="index", methods={"GET"})
+     * @return Response
+     */
+    public function index()
+    {
+        return new Response("Welcome to the exchange-currency API. More info at https://github.com/msalsas/currency-exchange");
+    }
+    /**
     * @Route("/currency/{currencyFrom}/{currencyTo}", name="get_currency_rate", methods={"GET"})
     * @param $currencyFrom string
     * @param $currencyTo string
