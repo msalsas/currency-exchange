@@ -2,10 +2,13 @@
 
 namespace App\Controller;
 
+use App\Exception\CurrencyRateException;
 use App\Service\CurrencyRateService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CurrencyRateController extends AbstractController
 {
@@ -28,9 +31,15 @@ class CurrencyRateController extends AbstractController
     */
    public function cget($currencyFrom, $currencyTo, Request $request)
    {
-       $number = (float) $request->get('number');
+       try {
+           $number = (float)$request->get('number');
 
-       return $this->currencyRateService->get($currencyFrom, $currencyTo, $number);
+           return $this->currencyRateService->get($currencyFrom, $currencyTo, $number);
+       } catch (CurrencyRateException $e) {
+           throw new NotFoundHttpException($e->getMessage());
+       } catch (\Exception $e) {
+           throw new UnprocessableEntityHttpException('I wish I could give you more information');
+       }
    }
 
     /**
@@ -40,13 +49,19 @@ class CurrencyRateController extends AbstractController
      */
     public function create(Request $request)
     {
-        $currency = (string) $request->get('currency');
-        $rateToEur = (float) $request->get('rateToEur');
-        $symbol = (string) $request->get('symbol');
+        try {
+            $currency = (string)$request->get('currency');
+            $rateToEur = (float)$request->get('rateToEur');
+            $symbol = (string)$request->get('symbol');
 
-        return $this->currencyRateService
-            ->create($currency, $rateToEur, $symbol)
-            ->toArray();
+            return $this->currencyRateService
+                ->create($currency, $rateToEur, $symbol)
+                ->toArray();
+        } catch (CurrencyRateException $e) {
+            throw new NotFoundHttpException($e->getMessage());
+        } catch (\Exception $e) {
+            throw new UnprocessableEntityHttpException("I can't just create things");
+        }
     }
 
     /**
@@ -56,13 +71,19 @@ class CurrencyRateController extends AbstractController
      */
     public function update(Request $request)
     {
-        $currency = (string) $request->get('currency');
-        $rateToEur = (float) $request->get('rateToEur');
-        $symbol = (string) $request->get('symbol');
+        try {
+            $currency = (string)$request->get('currency');
+            $rateToEur = (float)$request->get('rateToEur');
+            $symbol = (string)$request->get('symbol');
 
-        return $this->currencyRateService
-            ->update($currency, $rateToEur, $symbol)
-            ->toArray();
+            return $this->currencyRateService
+                ->update($currency, $rateToEur, $symbol)
+                ->toArray();
+        } catch (CurrencyRateException $e) {
+            throw new NotFoundHttpException($e->getMessage());
+        } catch (\Exception $e) {
+            throw new UnprocessableEntityHttpException("I can't just create things");
+        }
     }
 
     /**
@@ -72,8 +93,14 @@ class CurrencyRateController extends AbstractController
      */
     public function delete($currency)
     {
-        return $this->currencyRateService
-            ->delete($currency)
-            ->toArray();
+        try {
+           return $this->currencyRateService
+                ->delete($currency)
+                ->toArray();
+        } catch (CurrencyRateException $e) {
+            throw new NotFoundHttpException($e->getMessage());
+        } catch (\Exception $e) {
+            throw new UnprocessableEntityHttpException("I can't just create things");
+        }
     }
 }
