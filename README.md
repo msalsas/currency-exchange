@@ -10,6 +10,18 @@ Documentation
 Installation
 ------------
 
+    git clone https://github.com/msalsas/currency-exchange.git
+
+    cd currency-exchange
+
+    composer install
+
+    php bin/console doctrine:database:create (you will need php-sqlite3 as database is sqlite by default)
+
+    php bin/console doctrine:migrations:migrate
+
+    symfony server:start (you will need the [Symfony installer](https://symfony.com/download))
+
 
 License
 -------
