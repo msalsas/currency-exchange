@@ -4,11 +4,14 @@ namespace App\Controller;
 
 use App\Exception\CurrencyRateException;
 use App\Service\CurrencyRateService;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 
 class CurrencyRateController extends AbstractController
 {
@@ -27,14 +30,14 @@ class CurrencyRateController extends AbstractController
     * @param $currencyFrom string
     * @param $currencyTo string
     * @param $request Request
-    * @return number
+    * @return Response
     */
    public function cget($currencyFrom, $currencyTo, Request $request)
    {
        try {
            $number = (float)$request->get('number');
 
-           return $this->currencyRateService->get($currencyFrom, $currencyTo, $number);
+           return new Response($this->currencyRateService->get($currencyFrom, $currencyTo, $number));
        } catch (CurrencyRateException $e) {
            throw new NotFoundHttpException($e->getMessage());
        } catch (\Exception $e) {
@@ -43,64 +46,46 @@ class CurrencyRateController extends AbstractController
    }
 
     /**
-     * @Route("/currency", name="create_currency_rate", methods={"POST"})
+     * @Route("/currency/{currency}", name="modify_currency_rate")
      * @param $request Request
-     * @return array
-     */
-    public function create(Request $request)
-    {
-        try {
-            $currency = (string)$request->get('currency');
-            $rateToEur = (float)$request->get('rateToEur');
-            $symbol = (string)$request->get('symbol');
-
-            return $this->currencyRateService
-                ->create($currency, $rateToEur, $symbol)
-                ->toArray();
-        } catch (CurrencyRateException $e) {
-            throw new NotFoundHttpException($e->getMessage());
-        } catch (\Exception $e) {
-            throw new UnprocessableEntityHttpException("I can't just create things");
-        }
-    }
-
-    /**
-     * @Route("/currency", name="update_currency_rate", methods={"PUT"})
-     * @param $request Request
-     * @return array
-     */
-    public function update(Request $request)
-    {
-        try {
-            $currency = (string)$request->get('currency');
-            $rateToEur = (float)$request->get('rateToEur');
-            $symbol = (string)$request->get('symbol');
-
-            return $this->currencyRateService
-                ->update($currency, $rateToEur, $symbol)
-                ->toArray();
-        } catch (CurrencyRateException $e) {
-            throw new NotFoundHttpException($e->getMessage());
-        } catch (\Exception $e) {
-            throw new UnprocessableEntityHttpException("I can't just create things");
-        }
-    }
-
-    /**
-     * @Route("/currency/{currency}", name="create_currency_rate", methods={"DELETE"})
+     * @param $serializer SerializerInterface
      * @param $currency string
-     * @return array
+     * @return Response
      */
-    public function delete($currency)
+    public function modify(Request $request, SerializerInterface $serializer, $currency)
     {
         try {
-           return $this->currencyRateService
-                ->delete($currency)
-                ->toArray();
+            $requestData = json_decode($request->getContent());
+            $rateToEur = $requestData ? (float) $requestData->rateToEur : 0;
+            $symbol = $requestData ? (string) $requestData->symbol : '';
+
+            $response = new Response();
+
+            switch ($request->getMethod()) {
+                case 'POST':
+                    $serialized = $serializer->serialize($this->currencyRateService
+                        ->create($currency, $rateToEur, $symbol), 'json');
+                    break;
+                case 'PUT':
+                    $serialized = $serializer->serialize($this->currencyRateService
+                        ->update($currency, $rateToEur, $symbol), 'json');
+                    break;
+                case 'DELETE':
+                    $serialized = $serializer->serialize($this->currencyRateService
+                        ->delete($currency), 'json');
+                    break;
+                default:
+                    throw new MethodNotAllowedException("Method not allowed");
+            }
+
+            $response->setContent($serialized);
+
+            return $response;
+
         } catch (CurrencyRateException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (\Exception $e) {
-            throw new UnprocessableEntityHttpException("I can't just create things");
+            throw new UnprocessableEntityHttpException("I can't just do things");
         }
     }
 }
