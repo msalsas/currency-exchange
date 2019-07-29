@@ -7,7 +7,7 @@ Documentation
 -------------
 
     GET /currency/{currencyFrom}/{currencyTo}/?number=number
-    example: GET /currency/eur/dol/3.45
+    example: GET /currency/eur/dol/?number=3.45
     
     POST /currency/{currency}
     parameters: json => {rateToEur, symbol}
